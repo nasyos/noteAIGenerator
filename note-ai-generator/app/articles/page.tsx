@@ -6,15 +6,22 @@ import { Plus, BookOpen, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
+import { supabase } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 async function getArticles() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/articles`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return [];
-    return res.json();
+    const { data, error } = await supabase
+      .from('articles')
+      .select('*, article_plans(*, topics(*))')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Supabase error:', error);
+      return [];
+    }
+    return data || [];
   } catch (error) {
     console.error('Failed to fetch articles:', error);
     return [];

@@ -3,16 +3,34 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Lightbulb, FileText, BookOpen, TrendingUp } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 async function getDashboardStats() {
-  // 本番環境では実際のAPIから取得
-  // 今はモックデータ
-  return {
-    totalTopics: 0,
-    availableTopics: 0,
-    totalPlans: 0,
-    totalArticles: 0,
-  };
+  try {
+    const [topicsRes, plansRes, articlesRes] = await Promise.all([
+      supabase.from('topics').select('id, status'),
+      supabase.from('article_plans').select('id'),
+      supabase.from('articles').select('id'),
+    ]);
+
+    const topics = topicsRes.data || [];
+    return {
+      totalTopics: topics.length,
+      availableTopics: topics.filter((t) => t.status === 'available').length,
+      totalPlans: plansRes.data?.length || 0,
+      totalArticles: articlesRes.data?.length || 0,
+    };
+  } catch (error) {
+    console.error('Failed to fetch dashboard stats:', error);
+    return {
+      totalTopics: 0,
+      availableTopics: 0,
+      totalPlans: 0,
+      totalArticles: 0,
+    };
+  }
 }
 
 export default async function DashboardPage() {

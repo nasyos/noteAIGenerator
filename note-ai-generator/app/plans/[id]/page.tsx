@@ -6,15 +6,23 @@ import Link from 'next/link';
 import { ArrowLeft, FileText } from 'lucide-react';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
+import { supabase } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 async function getPlan(id: string) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/plans/${id}`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return null;
-    return res.json();
+    const { data, error } = await supabase
+      .from('article_plans')
+      .select('*, topics(*)')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Supabase error:', error);
+      return null;
+    }
+    return data;
   } catch (error) {
     console.error('Failed to fetch plan:', error);
     return null;

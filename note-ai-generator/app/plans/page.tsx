@@ -6,15 +6,22 @@ import { Plus, FileText } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
+import { supabase } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 async function getPlans() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/plans`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return [];
-    return res.json();
+    const { data, error } = await supabase
+      .from('article_plans')
+      .select('*, topics(*)')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Supabase error:', error);
+      return [];
+    }
+    return data || [];
   } catch (error) {
     console.error('Failed to fetch plans:', error);
     return [];

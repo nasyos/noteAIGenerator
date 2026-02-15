@@ -4,15 +4,23 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { Plus, Lightbulb } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 async function getTopics() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/topics`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return [];
-    return res.json();
+    const { data, error } = await supabase
+      .from('topics')
+      .select('*')
+      .order('priority', { ascending: false })
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Supabase error:', error);
+      return [];
+    }
+    return data || [];
   } catch (error) {
     console.error('Failed to fetch topics:', error);
     return [];
