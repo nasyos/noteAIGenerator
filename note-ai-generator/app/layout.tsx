@@ -5,8 +5,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Note AI Generator - EXTOOL',
-  description: 'AI業務改善記事の自動生成システム',
+  title: 'AI Content Creator - EXTOOL',
+  description: 'AIの力で高品質なコンテンツを自動生成。アイデアから完成記事まで一気通貫で作成できるコンテンツクリエイターツール',
 };
 
 export default function RootLayout({
