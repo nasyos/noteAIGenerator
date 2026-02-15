@@ -62,6 +62,10 @@ ANTHROPIC_API_KEY=your-anthropic-api-key
 
 # Base URL (for API calls in SSR)
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+# Basic Authentication (Production only)
+AUTH_USERNAME=admin
+AUTH_PASSWORD=your-secure-password-here
 ```
 
 ### 3. Supabaseのセットアップ
@@ -159,6 +163,24 @@ npm run dev
 3. AIが完全な記事を自動生成
 4. 編集・プレビューで内容を確認
 5. コピーしてnoteに貼り付け
+
+## セキュリティ
+
+### Basic認証（本番環境）
+
+本番環境では自動的にBasic認証が有効になります。環境変数で認証情報を設定してください：
+
+- `AUTH_USERNAME`: ユーザー名（デフォルト: admin）
+- `AUTH_PASSWORD`: パスワード（必ず変更してください）
+
+開発環境（`NODE_ENV=development`）では認証はスキップされます。
+
+### 推奨事項
+
+1. **強力なパスワード**: 最低12文字以上のランダムな文字列を使用
+2. **Supabase RLS**: Row Level Securityを有効化（データベース保護）
+3. **Claude APIキー**: 定期的にローテーション
+4. **アクセスログ**: 定期的に確認
 
 ## ディレクトリ構造
 
