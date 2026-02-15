@@ -24,9 +24,10 @@ async function getPlan(id: string) {
 export default async function PlanDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const plan = await getPlan(params.id);
+  const { id } = await params;
+  const plan = await getPlan(id);
 
   if (!plan) {
     return (

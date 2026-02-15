@@ -4,13 +4,14 @@ import { supabase } from '@/lib/supabase';
 // GET: 特定の企画を取得
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { data, error } = await supabase
       .from('article_plans')
       .select('*, topics(*)')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (error) {
@@ -37,15 +38,16 @@ export async function GET(
 // PATCH: 企画更新
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
 
     const { data, error } = await supabase
       .from('article_plans')
       .update(body)
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single();
 
@@ -70,13 +72,14 @@ export async function PATCH(
 // DELETE: 企画削除
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { error } = await supabase
       .from('article_plans')
       .delete()
-      .eq('id', params.id);
+      .eq('id', id);
 
     if (error) {
       console.error('Supabase error:', error);

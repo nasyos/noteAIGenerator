@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { MarkdownEditor } from '@/components/article/MarkdownEditor';
 import { MarkdownPreview } from '@/components/article/MarkdownPreview';
@@ -19,8 +19,9 @@ import { ja } from 'date-fns/locale';
 export default function ArticleDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = use(params);
   const [article, setArticle] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -30,11 +31,11 @@ export default function ArticleDetailPage({
 
   useEffect(() => {
     fetchArticle();
-  }, []);
+  }, [id]);
 
   const fetchArticle = async () => {
     try {
-      const response = await fetch(`/api/articles/${params.id}`);
+      const response = await fetch(`/api/articles/${id}`);
       if (!response.ok) throw new Error('記事の取得に失敗しました');
       const data = await response.json();
       setArticle(data);
@@ -51,7 +52,7 @@ export default function ArticleDetailPage({
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const response = await fetch(`/api/articles/${params.id}`, {
+      const response = await fetch(`/api/articles/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

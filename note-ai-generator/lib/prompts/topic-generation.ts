@@ -1,4 +1,29 @@
-export function generateTopicPrompt(count: number): string {
+export const TOPIC_CATEGORIES = [
+  '業務効率化（営業、経理、人事、総務など）',
+  '顧客対応・マーケティング',
+  'データ分析・意思決定支援',
+  '開発・エンジニアリング',
+  'クリエイティブ制作',
+  '組織運営・ナレッジマネジメント',
+] as const;
+
+export type TopicCategory = (typeof TOPIC_CATEGORIES)[number];
+
+export function generateTopicPrompt(
+  count: number,
+  categories?: string[]
+): string {
+  const categorySection =
+    categories && categories.length > 0
+      ? `## カテゴリ指定
+以下の指定カテゴリに絞ってトピックを提案してください：
+${categories.map((c) => `- ${c}`).join('\n')}
+`
+      : `## 多様性の確保
+以下のカテゴリからバランスよく選定してください：
+${TOPIC_CATEGORIES.map((c) => `- ${c}`).join('\n')}
+`;
+
   return `
 【AI業務改善トピック調査】
 
@@ -11,14 +36,7 @@ export function generateTopicPrompt(count: number): string {
 - 競合: ニッチで需要のあるトピック優先
 - 具体性: 抽象的すぎず、実装イメージが湧くテーマ
 
-## 多様性の確保
-以下のカテゴリからバランスよく選定してください：
-- 業務効率化（営業、経理、人事、総務など）
-- 顧客対応・マーケティング
-- データ分析・意思決定支援
-- 開発・エンジニアリング
-- クリエイティブ制作
-- 組織運営・ナレッジマネジメント
+${categorySection}
 
 ## 出力形式
 以下のJSON配列で出力してください：

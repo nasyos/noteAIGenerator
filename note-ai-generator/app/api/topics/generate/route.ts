@@ -8,9 +8,10 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const count = body.count || 20;
+    const categories: string[] | undefined = body.categories;
 
     // プロンプト生成
-    const prompt = generateTopicPrompt(count);
+    const prompt = generateTopicPrompt(count, categories);
 
     // Claude APIを呼び出し
     const startTime = Date.now();
