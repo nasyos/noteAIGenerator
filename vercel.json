@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd note-ai-generator && npm run build",
+  "devCommand": "cd note-ai-generator && npm run dev",
+  "installCommand": "cd note-ai-generator && npm install",
+  "outputDirectory": "note-ai-generator/.next"
+}
